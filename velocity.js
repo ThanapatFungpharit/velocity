@@ -29,8 +29,6 @@ doVelocity = function(pixel) {
 
         if (tryMove(pixel, x, y)) continue;
 
-        // Blocked: transfer the pixel's *remaining* velocity to whatever
-        // it hit, exactly once, then stop this pixel's motion this frame.
         if (!isEmpty(x, y, true)) {
             var newPixel = pixelMap[x][y];
             if (elements[newPixel.element].movable) {
@@ -69,8 +67,6 @@ explodeAt = function(x, y, radius, fire = "fire") {
         var dx = coords[i].x - x;
         var dy = coords[i].y - y;
         var dist = Math.sqrt(dx * dx + dy * dy);
-
-        // damage falls off linearly from center (1) to edge (0)
         var damage = 1 - (dist / radius) - (Math.random() * 0.15);
         if (damage < 0) damage = 0;
         damage *= power;
@@ -99,6 +95,7 @@ explodeAt = function(x, y, radius, fire = "fire") {
         }
 
         if (damage > 1000) { // testing
+            console.log(pixel, "gone.")
             changePixel(pixel, pickFire(fire));
             continue;
         } else if (damage > 0.25) {
