@@ -11,7 +11,7 @@ doVelocity = function(pixel) {
 
     var signX = Math.sign(pixel.vx);
     var signY = Math.sign(pixel.vy);
-
+    
     var errX = 0, errY = 0;
 
     for (var i = 0; i < steps; i++) {
@@ -28,7 +28,7 @@ doVelocity = function(pixel) {
         var y = pixel.y + (moveY ? signY : 0);
 
         if (tryMove(pixel, x, y)) continue;
-
+        
         if (!isEmpty(x, y, true)) {
             var newPixel = pixelMap[x][y];
             if (elements[newPixel.element].movable) {
@@ -61,12 +61,13 @@ explodeAt = function(x, y, radius, fire = "fire") {
         fire = fire.split(",");
     }
     var coords = circleCoords(x, y, radius);
-    var power = radius / 2;
+    var power = radius / 10;
 
     for (var i = 0; i < coords.length; i++) {
         var dx = coords[i].x - x;
         var dy = coords[i].y - y;
         var dist = Math.sqrt(dx * dx + dy * dy);
+
         var damage = 1 - (dist / radius) - (Math.random() * 0.15);
         if (damage < 0) damage = 0;
         damage *= power;
@@ -94,8 +95,17 @@ explodeAt = function(x, y, radius, fire = "fire") {
             }
         }
 
-        if (damage > 1000) { // testing
-            console.log(pixel, "gone.")
+        pixel.temp += damage * radius * power;
+        pixelTempCheck(pixel);
+
+        if (!info.excludeRandom) {
+            var angle = Math.atan2(dy, dx);
+            var kick = damage * power * 10;
+            pixel.vx = Math.round((pixel.vx | 0) + Math.cos(angle) * kick);
+            pixel.vy = Math.round((pixel.vy | 0) + Math.sin(angle) * kick);
+        }
+
+        if (damage > 0.9) {
             changePixel(pixel, pickFire(fire));
             continue;
         } else if (damage > 0.25) {
@@ -111,16 +121,6 @@ explodeAt = function(x, y, radius, fire = "fire") {
         if (damage > 0.75 && info.burn) {
             pixel.burning = true;
             pixel.burnStart = pixelTicks;
-        }
-
-        pixel.temp += damage * radius * power;
-        pixelTempCheck(pixel);
-
-        if (!info.excludeRandom) {
-            var angle = Math.atan2(dy, dx);
-            var kick = damage * power * 3;
-            pixel.vx = Math.round((pixel.vx | 0) + Math.cos(angle) * kick);
-            pixel.vy = Math.round((pixel.vy | 0) + Math.sin(angle) * kick);
         }
     }
 }
