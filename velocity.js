@@ -105,10 +105,11 @@ explodeAt = function(x, y, radius, fire = "fire") {
             pixel.vy = Math.round((pixel.vy | 0) + Math.sin(angle) * kick);
         }
 
-        if (damage > 0.9) {
+        /*if (damage > 0.9) {
             changePixel(pixel, pickFire(fire));
             continue;
-        } else if (damage > 0.25) {
+        } else */
+        if (damage > 0.25) {
             if (info.breakInto !== undefined) {
                 breakPixel(pixel);
             } else {
