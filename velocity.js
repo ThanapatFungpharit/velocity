@@ -63,7 +63,7 @@ explodeAt = function(x, y, radius, fire = "fire") {
         fire = fire.split(",");
     }
     var coords = circleCoords(x, y, radius);
-    var power = radius / 10;
+    var power = radius / 2;
 
     for (var i = 0; i < coords.length; i++) {
         var dx = coords[i].x - x;
