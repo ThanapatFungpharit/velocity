@@ -98,7 +98,7 @@ explodeAt = function(x, y, radius, fire = "fire") {
             }
         }
 
-        if (damage > 0.9) {
+        if (damage > 1000) { // testing
             changePixel(pixel, pickFire(fire));
             continue;
         } else if (damage > 0.25) {
